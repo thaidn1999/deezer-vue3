@@ -11,14 +11,14 @@ export const useSongStore = defineStore('song', {
     const currentVolume = ref<Number>(80)
     const isLyrics = ref<Boolean>(false)
     const lyricsPosition = ref<String>('0:00')
-    const audio = ref<HTMLAudioElement | any>({})
+    const audio = ref<HTMLAudioElement | any>()
     return { isPlaying, audio, currentArtist, lyricsPosition, currentTrack, trackTime, currentVolume, isLyrics }
   },
   actions: {
     loadSong(artist: any, track: any): void {
       this.currentArtist = artist
       this.currentTrack = track
-      if (this.audio && (this.audio?.src as HTMLAudioElement)) {
+      if (this.audio && this.audio?.src) {
         this.audio.pause()
         this.isPlaying = false
         this.audio.src = ''
@@ -74,7 +74,6 @@ export const useSongStore = defineStore('song', {
 
     resetState(): void {
       this.isPlaying = false
-      this.audio = null
       this.currentArtist = {}
       this.currentTrack = {}
     }

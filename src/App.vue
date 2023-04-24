@@ -1,9 +1,9 @@
 <script setup lang="ts">
   import { onBeforeMount } from 'vue'
   import { RouterView, RouterLink } from 'vue-router'
-  import SideMenuItem from './components/SideMenuItem.vue'
-  // import MusicPlayer from './components/MusicPlayer.vue'
-  // import SongLyrics from './components/SongLyrics.vue'
+  import SideMenuItem from '@/components/SideMenuItem.vue'
+  import MusicPlayer from '@/components/MusicPlayer.vue'
+  import SongLyrics from '@/components/SongLyrics.vue'
 
   import { useSongStore } from '@/stores/song'
   import { storeToRefs } from 'pinia'
@@ -54,11 +54,11 @@
     </div>
   </div>
 
-  <div class="fixed ml-[240px] mt-[56px] h-[calc(100%-56px)] w-[calc(100%-240px)] overflow-x-auto">
+  <div class="scrollbar fixed ml-[240px] mt-[56px] h-[calc(100%-56px)] w-[calc(100%-240px)] overflow-x-auto">
     <RouterView />
   </div>
 
-  <!-- <MusicPlayer v-if="currentTrack" />
-
-  <SongLyrics v-if="isLyrics" :class="{ 'animate__animated animate__slideInUp animate__faster': isLyrics }" /> -->
+  <MusicPlayer v-if="currentTrack" />
+  <SongLyrics v-if="isLyrics" :class="{ 'animate__animated animate__slideInUp animate__faster': isLyrics }" />
 </template>
+<style scoped lang="scss"></style>

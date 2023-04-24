@@ -1,17 +1,17 @@
 <template>
   <div class="fixed mx-auto flex h-[calc(100%-80px)] w-full min-w-[1000px] items-center bg-purple-600 bg-gradient-to-r from-blue-400 to-transparent">
     <button @click="isLyrics = false" type="button" class="absolute top-0 m-8 rounded-full bg-black bg-opacity-20 p-2 hover:bg-opacity-40">
-      <Close :size="30" fillColor="#FFFFFF" />
+      <img src="/icons/close.svg" />
     </button>
     <div class="relative mx-auto flex w-1/2 max-w-[400px] items-center">
       <div class="absolute z-20 m-1 rounded-xl px-3 py-1.5 text-[20px] font-bold text-white">{{ currentArtist.name }}</div>
       <div class="absolute right-0 z-20 m-1 rounded-xl px-3 py-1.5 text-[20px] font-bold text-white">{{ currentTrack.name }}</div>
       <div class="relative">
         <img class="rounded-3xl shadow-2xl" :src="currentArtist.albumCover" />
-        <div class="absolute top-0 z-10 h-full w-full rounded-3xl bg-black bg-opacity-10 blur-2xl" />
+        <div class="absolute top-0 z-10 h-full w-full rounded-3xl bg-black bg-opacity-10 blur-2xl"></div>
       </div>
     </div>
-    <div id="LyricsDiv" class="scrollbar-hide relative mx-auto h-[calc(100%-1px)] w-1/2 max-w-[600px] overflow-auto">
+    <div id="LyricsDiv" class="scrollbar-hide scrollbar relative ml-auto h-[calc(100%-1px)] w-1/2 max-w-[600px] overflow-auto">
       <div class="my-[90%]"></div>
       <div
         class="text-center text-[40px] font-semibold opacity-100"
@@ -75,7 +75,7 @@
   watch(
     () => currentTrack.value.id,
     id => {
-      if (artist[id].lyrics) isLyrics.value = false
+      if (artist.tracks[id].lyrics) isLyrics.value = false
     }
   )
 </script>

@@ -1,37 +1,18 @@
 <script setup lang="ts">
   import { ref, watch, onMounted } from 'vue'
-
   import MusicPlayerVolume from '@/components/MusicPlayerVolume.vue'
-
-  // import ShuffleVariant from 'vue-material-design-icons/ShuffleVariant.vue';
-  // import HeartOutline from 'vue-material-design-icons/HeartOutline.vue';
-  // import MicrophoneVariant from 'vue-material-design-icons/MicrophoneVariant.vue';
-  // import Plus from 'vue-material-design-icons/Plus.vue';
-  // import Tune from 'vue-material-design-icons/Tune.vue';
-  // import PictureInPictureBottomRight from 'vue-material-design-icons/PictureInPictureBottomRight.vue';
-  // import Play from 'vue-material-design-icons/Play.vue';
-  // import Pause from 'vue-material-design-icons/Pause.vue';
-  // import SkipBackward from 'vue-material-design-icons/SkipBackward.vue';
-  // import SkipForward from 'vue-material-design-icons/SkipForward.vue';
-  // import VolumeHigh from 'vue-material-design-icons/VolumeHigh.vue';
-  // import VolumeMute from 'vue-material-design-icons/VolumeMute.vue';
-
-  import uniqolor from 'uniqolor'
-
-  import { useSongStore } from '../stores/song'
+  import { useSongStore } from '@/stores/song'
   import { storeToRefs } from 'pinia'
   const useSong = useSongStore()
   const { isPlaying, audio, currentTrack, currentArtist, trackTime, isLyrics, currentVolume } = storeToRefs(useSong)
 
-  let randColor = ref<String>('')
-  randColor.value = uniqolor.random()
-  let isHover = ref(false)
-  let isVolumeHover = ref(false)
-  let isTrackTimeCurrent = ref('0:00')
-  let isTrackTimeTotal = ref('0:00')
+  let isHover = ref<Boolean>(false)
+  let isVolumeHover = ref<Boolean>(false)
+  let isTrackTimeCurrent = ref<String>('0:00')
+  let isTrackTimeTotal = ref<String>('0:00')
   let seeker = ref<any>(null)
-  let seekerContainer = ref(null)
-  let range = ref(0)
+  let seekerContainer = ref<any>(null)
+  let range = ref<Number>(0)
 
   onMounted(() => {
     if (audio.value) {
@@ -40,46 +21,55 @@
         loadmetadata()
       }, 300)
     }
-    if (currentTrack.value) {
-      seeker.value.addEventListener('change', function () {
-        const time = audio.value.duration * (seeker.value.value / 100)
-        audio.value.currentTime = time
+    if (currentTrack.value && audio.value) {
+      let valueAudio = audio.value
+      let eventSeeker = seeker.value as HTMLInputElement
+      let containerSeeker = seekerContainer.value as HTMLDivElement
+      eventSeeker.addEventListener('change', () => {
+        const time = valueAudio.duration * (+eventSeeker.value / 100)
+        valueAudio.currentTime = time
       })
-      seeker.value.addEventListener('mousedown', function () {
-        audio.value.pause()
+      eventSeeker.addEventListener('mousedown', () => {
+        valueAudio.pause()
         isPlaying.value = false
       })
-      seeker.value.addEventListener('mouseup', function () {
-        audio.value.play()
+      eventSeeker.addEventListener('mouseup', () => {
+        valueAudio.play()
         isPlaying.value = true
       })
-      seekerContainer.value.addEventListener('click', function (e) {
-        const clickPosition = (e.pageX - seekerContainer.value.offsetLeft) / seekerContainer.value.offsetWidth
-        const time = audio.value.duration * clickPosition
-        audio.value.currentTime = time
-        seeker.value.value = (100 / audio.value.duration) * audio.value.currentTime
+      containerSeeker.addEventListener('click', (e: any) => {
+        const clickPosition = (e.pageX - containerSeeker.offsetLeft) / containerSeeker.offsetWidth
+        const time = valueAudio.duration * clickPosition
+        valueAudio.currentTime = time
+        eventSeeker.value = ((100 / valueAudio.duration) * valueAudio.currentTime).toString()
       })
     }
   })
 
   const timeupdate = () => {
-    audio.value.addEventListener('timeupdate', function () {
-      var minutes = Math.floor(audio.value.currentTime / 60)
-      var seconds = Math.floor(audio.value.currentTime - minutes * 60)
-      isTrackTimeCurrent.value = minutes + ':' + seconds.toString().padStart(2, '0')
-      trackTime.value = isTrackTimeCurrent.value
-      const value = (100 / audio.value.duration) * audio.value.currentTime
-      range.value = value
-      seeker.value.value = value
-    })
+    if (audio.value) {
+      let valueAudio = audio.value as HTMLAudioElement
+      valueAudio.addEventListener('timeupdate', () => {
+        var minutes = Math.floor(valueAudio.currentTime / 60)
+        var seconds = Math.floor(valueAudio.currentTime - minutes * 60)
+        isTrackTimeCurrent.value = minutes + ':' + seconds.toString().padStart(2, '0')
+        trackTime.value = isTrackTimeCurrent.value
+        const value = (100 / valueAudio.duration) * valueAudio.currentTime
+        range.value = value
+        seeker.value.value = value
+      })
+    }
   }
   const loadmetadata = () => {
-    audio.value.addEventListener('loadedmetadata', function () {
-      const duration = audio.value.duration
-      const minutes = Math.floor(duration / 60)
-      const seconds = Math.floor(duration % 60)
-      isTrackTimeTotal.value = minutes + ':' + seconds.toString().padStart(2, '0')
-    })
+    if (audio.value) {
+      let valueAudio = audio.value
+      valueAudio.addEventListener('loadedmetadata', () => {
+        const duration = valueAudio.duration
+        const minutes = Math.floor(duration / 60)
+        const seconds = Math.floor(duration % 60)
+        isTrackTimeTotal.value = minutes + ':' + seconds.toString().padStart(2, '0')
+      })
+    }
   }
   watch(
     () => audio.value,
@@ -99,7 +89,6 @@
   watch(
     () => currentTrack.value.id,
     val => {
-      randColor.value = uniqolor.random()
       if (currentTrack.value.lyrics) {
         isLyrics.value = true
         return
@@ -120,14 +109,15 @@
           class="mx-2 p-2"
           @click="useSong.prevSong(currentTrack)"
         >
-          <SkipBackward :fillColor="currentTrack.id === 1 ? '#747474' : '#FFFFFF'" :size="25" />
+          <img v-if="currentTrack.id === 1" src="/icons/skip-previous-1.svg" />
+          <img v-else src="/icons/skip-previous.svg" />
         </button>
         <button type="button" class="rounded-full p-2 hover:bg-[#363636]" @click="useSong.playOrPauseThisSong(currentArtist, currentTrack)">
-          <Play v-if="!isPlaying" fillColor="#FFFFFF" :size="45" />
-          <Pause v-else fillColor="#FFFFFF" :size="45" />
+          <img src="/icons/play.svg" v-if="!isPlaying" />
+          <img src="/icons/pause.svg" v-else />
         </button>
         <button type="button" class="mx-2 rounded-full p-2 hover:bg-[#363636]" @click="useSong.nextSong(currentTrack)">
-          <SkipForward fillColor="#FFFFFF" :size="25" />
+          <img src="/icons/skip-next.svg" />
         </button>
       </div>
     </div>
@@ -142,13 +132,13 @@
         </div>
         <div class="flex items-center">
           <div class="ml-2 cursor-pointer rounded-full p-1.5 hover:bg-[#5a5a5a] hover:bg-opacity-50">
-            <Plus fillColor="#FFFFFF" :size="20" />
+            <img src="/icons/plus.svg" />
           </div>
           <div class="ml-2 cursor-pointer rounded-full p-1.5 hover:bg-[#5a5a5a] hover:bg-opacity-50">
-            <HeartOutline fillColor="#FFFFFF" :size="20" />
+            <img src="/icons/heart.svg" />
           </div>
           <div class="ml-2 cursor-pointer rounded-full p-1.5 hover:bg-[#5a5a5a] hover:bg-opacity-50">
-            <Tune fillColor="#FFFFFF" :size="20" />
+            <img src="/icons/tune.svg" />
           </div>
         </div>
       </div>
@@ -167,7 +157,7 @@
           />
           <div
             class="pointer-events-none absolute inset-y-0 left-0 z-10 w-0 rounded-full"
-            :style="`width: ${range}%; background-color: ${randColor.color}`"
+            :style="`width: ${range}%; background-color: grey`"
             :class="isHover ? 'mt-[5px] h-[4px]' : 'mt-[6px] h-[2px]'"
           ></div>
           <div :class="isHover ? 'mt-[5px] h-[4px]' : 'mt-[6px] h-[2px]'" class="absolute inset-y-0 left-0 z-[-0] w-full rounded-full bg-[#c4c4c4]"></div>
@@ -181,27 +171,27 @@
     <div class="flex w-1/4 items-center justify-end pr-6">
       <div class="flex items-center">
         <div class="ml-2 cursor-pointer rounded-full p-2 hover:bg-[#5a5a5a] hover:bg-opacity-50">
-          <PictureInPictureBottomRight class="block" fillColor="#FFFFFF" :size="17" />
+          <img src="/icons/picture-in-picture.svg" class="block" />
         </div>
         <div class="ml-2 cursor-pointer rounded-full p-2 hover:bg-[#5a5a5a] hover:bg-opacity-50">
-          <ShuffleVariant class="block" fillColor="#FFFFFF" :size="17" />
+          <img src="/icons/shuffle-bold.svg" class="block" />
         </div>
         <div @mouseenter="isVolumeHover = true" @mouseleave="isVolumeHover = false" class="relative">
           <div class="ml-2 cursor-pointer rounded-full p-2 hover:bg-[#5a5a5a] hover:bg-opacity-50">
-            <VolumeHigh v-if="+currentVolume > 0" class="block" fillColor="#FFFFFF" :size="17" />
-            <VolumeMute v-else class="block" fillColor="#FFFFFF" :size="17" />
+            <img src="/icons/volume-up.svg" v-if="+currentVolume > 0" class="block" />
+            <img src="/icons/volume-off.svg" v-else class="block" />
           </div>
           <div v-show="isVolumeHover" class="absolute -left-20 -top-12 rounded-xl bg-[#2a2a37] p-2 px-4 shadow-xl">
             <MusicPlayerVolume />
           </div>
         </div>
         <div class="ml-2 cursor-pointer rounded-full p-2 hover:bg-[#5a5a5a] hover:bg-opacity-50">
-          <Tune class="block" fillColor="#FFFFFF" :size="17" />
+          <img src="/icons/tune.svg" class="block" />
         </div>
       </div>
       <div class="ml-6 flex items-center border-l border-l-[#363636]">
         <img class="ml-6 rounded-sm" width="28" :src="currentArtist.albumCover" />
-        <div class="ml-1.5 text-xs font-light text-white">Queue</div>
+        <div class="ml-1.5 text-base font-light text-white">Queue</div>
       </div>
     </div>
   </div>
@@ -222,5 +212,11 @@
     border-radius: 100%;
     width: 12px;
     height: 12px;
+  }
+</style>
+
+<style scoped lang="scss">
+  img {
+    width: 24px;
   }
 </style>
