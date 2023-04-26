@@ -45,7 +45,7 @@
     <SideMenuItem iconString="explore" :iconSize="20" pageUrl="/artist" name="Explore" />
     <SideMenuItem iconString="favourite" :iconSize="20" pageUrl="/favourite" name="Favourites" />
 
-    <div class="mt-[25px] pl-[62px] text-[12px] font-light text-[#A2A2AD]">
+    <div class="mt-[25px] pl-[62px] text-[14px] font-light text-[#A2A2AD]">
       <div class="cursor-pointer py-[9px] hover:text-[#EF5465]">Favourite tracks</div>
       <div class="cursor-pointer py-[9px] hover:text-[#EF5465]">Playlist</div>
       <div class="cursor-pointer py-[9px] hover:text-[#EF5465]">Albums</div>

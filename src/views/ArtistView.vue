@@ -74,9 +74,9 @@
     <div class="pl-8">
       <div class="mb-7 text-3xl font-semibold text-white">Top tracks</div>
 
-      <div class="flex w-[300px] items-center rounded-sm border border-[#525254] bg-[#23232D] text-[#c9c9c9]">
+      <div class="flex w-[300px] items-center rounded-lg border border-[#525254] bg-[#23232D] text-[#c9c9c9]">
         <img width="24" src="/icons/search.svg" class="px-1" />
-        <input class="w-full bg-[#23232D] py-[5px] text-sm placeholder-[#7e7e7e] outline-none ring-0 hover:ring-0" type="text" placeholder="Search within tracks" />
+        <input class="w-full rounded-lg bg-[#23232D] py-2 text-sm placeholder-[#7e7e7e] outline-none ring-0 hover:ring-0" type="text" placeholder="Search within tracks" />
       </div>
     </div>
 

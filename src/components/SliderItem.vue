@@ -6,20 +6,20 @@
           :class="isHover ? 'bg-opacity-30 transition duration-150 ease-in' : 'bg-opacity-5 transition duration-150 ease-out'"
           class="absolute z-10 h-full w-full rounded-md bg-black"
         ></div>
-        <div class="absolute bottom-3 left-3 z-50 rounded-full bg-white p-1.5">
-          <img src="/icons/icon-play.png" alt="" />
+        <div class="absolute bottom-3 left-3 z-50 rounded-full bg-white p-1">
+          <img class="icon" src="/icons/play-circle.svg" alt="" />
         </div>
         <div
-          :class="isHover ? 'bg-opacity-100 transition duration-150 ease-in' : 'bg-opacity-0 transition duration-150 ease-out'"
-          class="absolute bottom-3 left-[60px] z-50 rounded-full bg-white p-2"
+          :class="isHover ? 'left-[48px] bg-opacity-100 transition duration-150 ease-in' : 'bg-opacity-0 transition duration-150 ease-out'"
+          class="absolute bottom-3 left-[60px] z-50 rounded-full bg-white p-1"
         >
-          <img src="/icons/heart.png" :class="isHover ? 'opacity-100 transition duration-150 ease-in' : 'opacity-0 transition duration-150 ease-out'" />
+          <img class="icon" src="/icons/heart-outline.svg" :class="isHover ? 'opacity-100 transition duration-150 ease-in' : 'opacity-0 transition duration-150 ease-out'" />
         </div>
         <div
-          :class="isHover ? 'bg-opacity-100 transition duration-150 ease-in' : 'bg-opacity-0 transition duration-150 ease-out'"
-          class="absolute bottom-3 left-[107px] z-50 rounded-full bg-white p-1.5"
+          :class="isHover ? 'left-[84px] bg-opacity-100 transition duration-150 ease-in' : 'bg-opacity-0 transition duration-150 ease-out'"
+          class="absolute bottom-3 left-[107px] z-50 rounded-full bg-white p-1"
         >
-          <img src="/icons/dot-horizontal.png" :class="isHover ? 'opacity-100 transition duration-150 ease-in' : 'opacity-0 transition duration-150 ease-out'" />
+          <img class="icon" src="/icons/dots-black.svg" :class="isHover ? 'opacity-100 transition duration-150 ease-in' : 'opacity-0 transition duration-150 ease-out'" />
         </div>
         <img width="25" class="absolute bottom-0 right-0 z-40 mr-3 pb-3 brightness-[1.1] contrast-[1.4]" src="/images/deezer-sound-icon.png" />
         <img class="aspect-square rounded-md" :src="slide?.url" />
@@ -40,3 +40,9 @@
   let isHover = ref<Boolean>(false)
   const props = defineProps({ slide: Object })
 </script>
+
+<style scoped lang="scss">
+  .icon {
+    width: 24px;
+  }
+</style>

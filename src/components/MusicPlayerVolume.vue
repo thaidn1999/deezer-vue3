@@ -6,19 +6,23 @@
   const { audio, currentVolume } = storeToRefs(useSong)
 
   let isHover = ref<Boolean>(false)
-  let volume = ref<any>(null)
+  let volume = ref<HTMLMediaElement>()
 
   onMounted((): void => {
-    volume.value.addEventListener('input', (e: any) => {
-      audio.value.volume = e.currentTarget.value / 100
-    })
+    if (volume.value) {
+      volume.value.addEventListener('input', (e: any) => {
+        if (audio.value) audio.value.volume = +e.currentTarget.value / 100
+      })
+    }
   })
 
   watch(
     () => audio.value,
     () => {
       setTimeout(() => {
-        audio.value.volume = +currentVolume.value / 100
+        if (audio.value) {
+          audio.value.volume = +currentVolume.value / 100
+        }
       }, 200)
     }
   )

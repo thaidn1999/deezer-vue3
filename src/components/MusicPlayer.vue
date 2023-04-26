@@ -4,7 +4,7 @@
   import { useSongStore } from '@/stores/song'
   import { storeToRefs } from 'pinia'
   const useSong = useSongStore()
-  const { isPlaying, audio, currentTrack, currentArtist, trackTime, isLyrics, currentVolume } = storeToRefs(useSong)
+  const { isPlaying, currentArtist, currentTrack, trackTime, currentVolume, isLyrics, audio } = storeToRefs(useSong)
 
   let isHover = ref<Boolean>(false)
   let isVolumeHover = ref<Boolean>(false)
@@ -15,59 +15,58 @@
   let range = ref<Number>(0)
 
   onMounted(() => {
-    if (audio.value) {
-      setTimeout(() => {
-        timeupdate()
-        loadmetadata()
-      }, 300)
-    }
+    setTimeout(() => {
+      timeupdate()
+      loadmetadata()
+    }, 300)
     if (currentTrack.value && audio.value) {
-      let valueAudio = audio.value
       let eventSeeker = seeker.value as HTMLInputElement
       let containerSeeker = seekerContainer.value as HTMLDivElement
       eventSeeker.addEventListener('change', () => {
-        const time = valueAudio.duration * (+eventSeeker.value / 100)
-        valueAudio.currentTime = time
+        if (audio.value) {
+          const time = audio.value.duration * (+eventSeeker.value / 100)
+          audio.value.currentTime = time
+        }
       })
       eventSeeker.addEventListener('mousedown', () => {
-        valueAudio.pause()
-        isPlaying.value = false
+        if (audio.value) {
+          audio.value.pause()
+          isPlaying.value = false
+        }
       })
       eventSeeker.addEventListener('mouseup', () => {
-        valueAudio.play()
-        isPlaying.value = true
+        if (audio.value) {
+          audio.value.play()
+          isPlaying.value = true
+        }
       })
       containerSeeker.addEventListener('click', (e: any) => {
-        const clickPosition = (e.pageX - containerSeeker.offsetLeft) / containerSeeker.offsetWidth
-        const time = valueAudio.duration * clickPosition
-        valueAudio.currentTime = time
-        eventSeeker.value = ((100 / valueAudio.duration) * valueAudio.currentTime).toString()
+        if (audio.value) {
+          const clickPosition = (e.pageX - containerSeeker.offsetLeft) / containerSeeker.offsetWidth
+          const time = audio.value.duration * clickPosition
+          audio.value.currentTime = time
+          eventSeeker.value = ((100 / audio.value.duration) * audio.value.currentTime).toString()
+        }
       })
     }
   })
 
-  const timeupdate = () => {
+  const timeupdate = (): void => {
     if (audio.value) {
-      let valueAudio = audio.value as HTMLAudioElement
-      valueAudio.addEventListener('timeupdate', () => {
-        var minutes = Math.floor(valueAudio.currentTime / 60)
-        var seconds = Math.floor(valueAudio.currentTime - minutes * 60)
-        isTrackTimeCurrent.value = minutes + ':' + seconds.toString().padStart(2, '0')
-        trackTime.value = isTrackTimeCurrent.value
-        const value = (100 / valueAudio.duration) * valueAudio.currentTime
-        range.value = value
-        seeker.value.value = value
+      audio.value.addEventListener('timeupdate', () => {
+        console.log('12313')
       })
     }
   }
   const loadmetadata = () => {
     if (audio.value) {
-      let valueAudio = audio.value
-      valueAudio.addEventListener('loadedmetadata', () => {
-        const duration = valueAudio.duration
-        const minutes = Math.floor(duration / 60)
-        const seconds = Math.floor(duration % 60)
-        isTrackTimeTotal.value = minutes + ':' + seconds.toString().padStart(2, '0')
+      audio.value.addEventListener('loadedmetadata', () => {
+        if (audio.value) {
+          const duration = audio.value.duration
+          const minutes = Math.floor(duration / 60)
+          const seconds = Math.floor(duration % 60)
+          isTrackTimeTotal.value = minutes + ':' + seconds.toString().padStart(2, '0')
+        }
       })
     }
   }

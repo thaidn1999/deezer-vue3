@@ -9,16 +9,16 @@
         class="flex cursor-pointer items-center text-xl font-semibold"
       >
         {{ category }}
-        <img src="/icons/chevron-right.png" class="mt-1" />
+        <img src="/icons/chevron-right.svg" class="mt-1" />
       </RouterLink>
 
       <div class="flex items-center">
         <button @click="slideTo(false)" class="rounded-full p-2 hover:bg-[#2b2b2b]">
-          <img src="/icons/chevron-left.png" alt="" />
+          <img src="/icons/chevron-left.svg" alt="" />
         </button>
         <div class="px-2"></div>
         <button @click="slideTo(true)" class="rounded-full p-2 hover:bg-[#2b2b2b]">
-          <img src="/icons/chevron-right.png" alt="" />
+          <img src="/icons/chevron-right.svg" alt="" />
         </button>
       </div>
     </div>
@@ -34,8 +34,6 @@
 <script setup lang="ts">
   import { ref, toRefs } from 'vue'
   import { RouterLink } from 'vue-router'
-  // import ChevronLeft from 'vue-material-design-icons/ChevronLeft.vue'
-  // import ChevronRight from 'vue-material-design-icons/ChevronRight.vue'
   import 'vue3-carousel/dist/carousel.css'
   import { Carousel, Slide } from 'vue3-carousel'
   import SliderItem from '@/components/SliderItem.vue'
@@ -67,3 +65,9 @@
     }
   }
 </script>
+
+<style scoped lang="scss">
+  img {
+    width: 32px;
+  }
+</style>
